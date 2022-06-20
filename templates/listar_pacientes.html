@@ -148,7 +148,7 @@
                     if ($("#pacienteFumador").val() == 1) {
                         $('#anniosFumador').show();
                         $('#anniosFumador').prop('required', true);
-
+                        
                         $("#anniosFumador").keyup(function () {
                             $('#prioridad').val(parseInt($('#anniosFumador').val()) / 4 + 2)
                         });
@@ -158,17 +158,22 @@
                         $('#prioridad').val(2)
                     }
                 });
-
-
             } else {
                 $('#pacienteDieta').show();
                 $('#pacienteDieta').prop('required', true);
                 $('#pacienteFumador, #relacionPesoEstatura, #anniosFumador').hide();
                 $('#pacienteFumador, #relacionPesoEstatura, #anniosFumador').prop('required', false);
                 $('#tipoPersona').val('anciano')
+
+                $("#pacienteDieta").change(function () {
+                    if (parseInt($("#pacienteDieta").val()) == 1 && (age >= 60 && age <= 100)) {
+                        $('#prioridad').val(age / 20 + 4)
+                    } else {
+                        $('#prioridad').val(age / 30 + 3)
+                    }
+                });
+
             }
-
-
         });
     });
 
