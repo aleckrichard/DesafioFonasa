@@ -34,7 +34,7 @@ mysql -u NOMBRE-USUARIO -h localhost -p fonasa < fonasa.sql
 _Finalmente se ejecutará en el puerto 3000_
 
 ```
-python app.py
+python3 app.py
 ```
 _Ir al navegador y abrir la URL: http://localhost:3000_
 
