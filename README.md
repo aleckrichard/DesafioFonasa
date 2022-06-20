@@ -44,8 +44,6 @@ _http://146.190.16.205_
 
 ## Construido con 🛠️
 
-_Menciona las herramientas que utilizaste para crear tu proyecto_
-
 * [Python](https://www.python.org) - Lenguaje de Programación
 * [MySQL](https://www.mysql.com) - Motor de bases de datos
 * [Flask](https://flask.palletsprojects.com/en/2.1.x/) - Framework Python
