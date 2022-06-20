@@ -53,4 +53,4 @@ _Menciona las herramientas que utilizaste para crear tu proyecto_
 * [JQuery](https://jquery.com) - Librería JavaScript
 
 ---
-⌨️ con ❤️ por [Villanuevand](https://github.com/Villanuevand) 😊
+⌨️ con ❤️ por [aleckrichard](https://github.com/aleckrichard) 😊
