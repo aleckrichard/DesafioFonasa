@@ -1,6 +1,6 @@
-# Título del Proyecto
+# Desafío Fonasa
 
-_Desafío Fonasa_
+_Proyecto que busca resolver un desafío planteado por el Fondo Nacional de Salud (FONASA), con la finalidad de automatizar la atención al paciente de los diferentes hospitales de la Región Metropolitana_
 
 ### Pre-requisitos 📋
 
