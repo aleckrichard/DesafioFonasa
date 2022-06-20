@@ -1,0 +1,176 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="form-group mb-4">
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCrearPaciente">
+        Crear Nuevo Paciente
+    </button>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th scope="col">N° Historia Clínica</th>
+                <th scope="col">Nombres</th>
+                <th scope="col">Fecha Nacimiento</th>
+                <th scope="col">Edad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes %}
+            <tr>
+                <td>{{paciente.0}}</td>
+                <td>{{paciente.1}}</td>
+                <td>{{paciente.2}}</td>
+                <td>{{paciente.3}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearPaciente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Crear Nuevo Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/addPaciente" method="post" class="row g-3">
+                    <div class="form-group">
+                        <input type="text" name="runPaciente" class="form-control" placeholder="Run o Passaporte"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="nombrePaciente" class="form-control" placeholder="Nombres y Apellidos"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" name="fechaNacimientoPaciente" id="fechaNacimientoPaciente"
+                            class="form-control" placeholder="Fecha de Nacimiento" required>
+                        <small class="text-danger" id="edad"></small>
+                    </div>
+                    <div class="form-group">
+                        <select name="idHospital" id="idHospital" class="form-control" required>
+                            <option value="">Hospital Inscrito</option>
+                            <option value="1">Hospital Metropolitano de Santiago</option>
+                            <option value="2">Hospital Padre Hurtado</option>
+                            <option value="3">Hospital San Borja Arriarán</option>
+                            <option value="4">Hospital Barros Luco Trudeau</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select name="relacionPesoEstatura" id="relacionPesoEstatura" class="form-control" required>
+                            <option value="">Relación Peso-Estatura</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <select name="pacienteFumador" id="pacienteFumador" class="form-control" required>
+                            <option value="">¿Es Fumador?</option>
+                            <option value="1">SI</option>
+                            <option value="0">NO</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="number" name="anniosFumador" id="anniosFumador" class="form-control"
+                            placeholder="Años de Fumador" required>
+                    </div>
+                    <div class="form-group">
+                        <select name="pacienteDieta" id="pacienteDieta" class="form-control" required>
+                            <option value="">¿Tiene Dieta?</option>
+                            <option value="1">SI</option>
+                            <option value="0">NO</option>
+                        </select>
+                    </div>
+                    <input type="text" name="tipoPersona" id="tipoPersona">
+                    <input type="text" name="prioridad" id="prioridad">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Guardar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        let prioridad = 0;
+        $('#relacionPesoEstatura, #pacienteFumador, #pacienteDieta, #anniosFumador').hide();
+        $("#fechaNacimientoPaciente").focusout(function () {
+            birth = new Date($("#fechaNacimientoPaciente").val());
+            let today = new Date();
+            let age = Math.floor((today - birth) / (365.25 * 24 * 60 * 60 * 1000));
+            $('#edad').html(age + ' Años de edad')
+            if (age == 0) {
+                age = 1
+            }
+
+            if (age >= 1 && age <= 15) {
+                $('#relacionPesoEstatura').show();
+                $('#relacionPesoEstatura').prop('required', true);
+                $('#pacienteFumador, #pacienteDieta, #anniosFumador').hide();
+                $('#pacienteFumador, #pacienteDieta, #anniosFumador').prop('required', false);
+                $('#tipoPersona').val('niño')
+
+                $("#relacionPesoEstatura").change(function () {
+                    let relacionPesoEstatura = parseInt($("#relacionPesoEstatura").val());
+                    switch (true) {
+                        case (age < 6):
+                            $('#prioridad').val(relacionPesoEstatura + 3)
+                            break;
+                        case (age < 13):
+                            $('#prioridad').val(relacionPesoEstatura + 2)
+                            break;
+                        case (age < 16):
+                            $('#prioridad').val(relacionPesoEstatura + 1)
+                            break;
+                    }
+                });
+
+            } else if (age >= 16 && age <= 40) {
+                $('#pacienteFumador').show();
+                $('#pacienteFumador').prop('required', true);
+                $('#relacionPesoEstatura, #pacienteDieta').hide();
+                $('#relacionPesoEstatura, #pacienteDieta').prop('required', false);
+                $('#tipoPersona').val('joven')
+                $("#pacienteFumador").change(function () {
+                    if ($("#pacienteFumador").val() == 1) {
+                        $('#anniosFumador').show();
+                        $('#anniosFumador').prop('required', true);
+
+                        $("#anniosFumador").keyup(function () {
+                            $('#prioridad').val(parseInt($('#anniosFumador').val()) / 4 + 2)
+                        });
+                    } else {
+                        $('#anniosFumador').hide();
+                        $('#anniosFumador').prop('required', false);
+                        $('#prioridad').val(2)
+                    }
+                });
+
+
+            } else {
+                $('#pacienteDieta').show();
+                $('#pacienteDieta').prop('required', true);
+                $('#pacienteFumador, #relacionPesoEstatura, #anniosFumador').hide();
+                $('#pacienteFumador, #relacionPesoEstatura, #anniosFumador').prop('required', false);
+                $('#tipoPersona').val('anciano')
+            }
+
+
+        });
+    });
+
+</script>
+{% endblock %}

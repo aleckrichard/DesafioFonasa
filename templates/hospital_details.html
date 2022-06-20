@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block title %}{{ hospital.1 }}{% endblock %}
+{% block titlePage %}{{ hospital.1 }}{% endblock %}
+
+{% block body %}
+<div class="table-responsive">
+    <table class="table table-striped table-sm datatables">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hospital in hospitales %}
+            <tr><td>{{hospital.0}}</td>
+                <td>{{hospital.1}}</td>
+                <td>
+                    <a href="hospital/{{hospital.0}}"" class="btn btn-primary">Ver Detalle</button>
+                </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

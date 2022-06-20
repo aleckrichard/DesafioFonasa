@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+{% block title %}{{ 'Listado de Hospitales'}}{% endblock %}
+{% block titlePage %}{{ 'Listado de Hospitales' }}{% endblock %}
+{% block body %}
+<div class="form-group mb-4">
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCrearHospital">
+        Crear Nuevo Hospital
+      </button>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped table-sm datatables">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hospital in hospitales %}
+            <tr><td>{{hospital.0}}</td>
+                <td>{{hospital.1}}</td>
+                <td>
+                    <a href="hospital/{{hospital.0}}"" class="btn btn-primary">Ver Detalle</button>
+                </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearHospital" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Crear Nuevo Hospital</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="/addHospital" method="post" class="row g-3">
+                <div class="form-group">
+                <input type="text" name="nombreHospital" class="form-control" placeholder="Ingrese un nombre" required>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Guardar</button>
+        </div>
+         </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
