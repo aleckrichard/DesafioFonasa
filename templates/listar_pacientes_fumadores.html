@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block title %}{{ 'Listado de Pacientes fumadores'}}{% endblock %}
+{% block titlePage %}{{ 'Listado de Pacientes fumadores' }}{% endblock %}
+{% block body %}
+
+
+<div class="table-responsive">
+    <table class="table table-striped table-sm datatables">
+        <thead>
+            <tr>
+                <th scope="col">N° Historia Clínica</th>
+                <th scope="col">Nombres</th>
+                <th scope="col">Fumador</th>
+                <th scope="col">Fecha Nacimiento</th>
+                <th scope="col">Edad</th>
+                <th scope="col">Prioridad</th>
+                <th scope="col">Riesgo</th>
+                <th scope="col">Hospital Inscrito</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes %}
+            <tr>
+                <td>{{paciente.0}}</td>
+                <td>{{paciente.1}}</td>
+                <td>{{paciente.2}}</td>
+                <td>{{paciente.3}}</td>
+                <td>{{paciente.4}}</td>
+                <td>{{paciente.5}}</td>
+                <td>{{paciente.6}}</td>
+                <td>{{paciente.7}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

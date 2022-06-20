@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+{% block title %}{{ 'Atender Pacientes'}}{% endblock %}
+{% block titlePage %}{{ 'Atender Pacientes' }}{% endblock %}
+{% block body %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{message}}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
+<div class="table-responsive">
+    <table class="table table-striped table-sm tablaAtenderPaciente">
+        <thead>
+            <tr>
+                <th scope="col">N° Historia Clínica</th>
+                <th scope="col">Run</th>
+                <th scope="col">Nombre Paciente</th>
+                <th scope="col">Prioridad</th>
+                <th scope="col">Especialista</th>
+                <th scope="col">Tipo Paciente</th>
+                <th scope="col">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes %}
+            <tr>
+                <td>{{paciente.0}}</td>
+                <td>{{paciente.1}}</td>
+                <td>{{paciente.2}}</td>
+                <td>{{paciente.3}}</td>
+                <td>{{paciente.4}}</td>
+                <td>{{paciente.6}}</td>
+                <td>
+                    <input type="hidden" value="{{paciente.0}}" id="numeroHistoriaClinicaPaciente" />
+                    <input type="hidden" value="{{paciente.2}}" id="nombrePaciente" />
+                    <button type="button" class="btn btn-danger btn-sm" onclick="abrirModal('{{paciente.0}}','{{paciente.1}}','{{paciente.2}}')">
+                    Atender
+                  </button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalAtenderPaciente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Atender paciente </h5> <br>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/updateAtenderPaciente" method="post" class="row g-3">
+                    <div class="form-group">
+                        <input type="text" name="nombrePacienteModal" id="nombrePacienteModal" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="runPacienteModal" id="runPacienteModal" class="form-control" readonly>
+                    </div>
+                    <input type="text" name="numeroHistoriaClinicaPacienteModal" id="numeroHistoriaClinicaPacienteModal" class="form-control" hidden>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Atender</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+function abrirModal(numeroHistoriaPaciente, runPaciente, nombrePaciente){
+    $("#numeroHistoriaClinicaPacienteModal").val(numeroHistoriaPaciente);
+    $("#nombrePacienteModal").val(nombrePaciente);
+    $("#runPacienteModal").val(runPaciente);
+    $('#modalAtenderPaciente').modal('show');
+}
+
+$('.tablaAtenderPaciente').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+                },
+        order: [[3, 'desc']]    
+            });
+
+
+</script>
+{% endblock %}

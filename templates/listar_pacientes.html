@@ -1,19 +1,37 @@
 {% extends 'layout.html' %}
-
+{% block title %}{{ 'Listado de Pacientes'}}{% endblock %}
+{% block titlePage %}{{ 'Listado de Pacientes' }}{% endblock %}
 {% block body %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{message}}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
 <div class="form-group mb-4">
     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCrearPaciente">
         Crear Nuevo Paciente
     </button>
 </div>
 <div class="table-responsive">
-    <table class="table table-striped table-sm">
+    <table class="table table-striped table-sm datatables">
         <thead>
             <tr>
                 <th scope="col">N° Historia Clínica</th>
                 <th scope="col">Nombres</th>
                 <th scope="col">Fecha Nacimiento</th>
                 <th scope="col">Edad</th>
+                <th scope="col">Prioridad</th>
+                <th scope="col">Riesgo</th>
+                <th scope="col">Hospital Inscrito</th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +41,9 @@
                 <td>{{paciente.1}}</td>
                 <td>{{paciente.2}}</td>
                 <td>{{paciente.3}}</td>
+                <td>{{paciente.4}}</td>
+                <td>{{paciente.5}}</td>
+                <td>{{paciente.6}}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -56,10 +77,9 @@
                     <div class="form-group">
                         <select name="idHospital" id="idHospital" class="form-control" required>
                             <option value="">Hospital Inscrito</option>
-                            <option value="1">Hospital Metropolitano de Santiago</option>
-                            <option value="2">Hospital Padre Hurtado</option>
-                            <option value="3">Hospital San Borja Arriarán</option>
-                            <option value="4">Hospital Barros Luco Trudeau</option>
+                            {% for hospital in hospitales %}
+                            <option value="{{hospital.0}}">{{hospital.1}}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="form-group">
@@ -91,8 +111,8 @@
                             <option value="0">NO</option>
                         </select>
                     </div>
-                    <input type="text" name="tipoPersona" id="tipoPersona">
-                    <input type="text" name="prioridad" id="prioridad">
+                    <input type="text" name="tipoPaciente" id="tipoPaciente" readonly hidden>
+                    <input type="text" name="prioridad" id="prioridad" readonly hidden>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -121,7 +141,7 @@
                 $('#relacionPesoEstatura').prop('required', true);
                 $('#pacienteFumador, #pacienteDieta, #anniosFumador').hide();
                 $('#pacienteFumador, #pacienteDieta, #anniosFumador').prop('required', false);
-                $('#tipoPersona').val('niño')
+                $('#tipoPaciente').val('niño')
 
                 $("#relacionPesoEstatura").change(function () {
                     let relacionPesoEstatura = parseInt($("#relacionPesoEstatura").val());
@@ -143,12 +163,12 @@
                 $('#pacienteFumador').prop('required', true);
                 $('#relacionPesoEstatura, #pacienteDieta').hide();
                 $('#relacionPesoEstatura, #pacienteDieta').prop('required', false);
-                $('#tipoPersona').val('joven')
+                $('#tipoPaciente').val('joven')
                 $("#pacienteFumador").change(function () {
                     if ($("#pacienteFumador").val() == 1) {
                         $('#anniosFumador').show();
                         $('#anniosFumador').prop('required', true);
-                        
+
                         $("#anniosFumador").keyup(function () {
                             $('#prioridad').val(parseInt($('#anniosFumador').val()) / 4 + 2)
                         });
@@ -163,7 +183,7 @@
                 $('#pacienteDieta').prop('required', true);
                 $('#pacienteFumador, #relacionPesoEstatura, #anniosFumador').hide();
                 $('#pacienteFumador, #relacionPesoEstatura, #anniosFumador').prop('required', false);
-                $('#tipoPersona').val('anciano')
+                $('#tipoPaciente').val('anciano')
 
                 $("#pacienteDieta").change(function () {
                     if (parseInt($("#pacienteDieta").val()) == 1 && (age >= 60 && age <= 100)) {

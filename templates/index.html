@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
-{% block title %}{{ 'Listado de Hospitales'}}{% endblock %}
-{% block titlePage %}{{ 'Listado de Hospitales' }}{% endblock %}
+{% block title %}{{ 'Hospitales de la Región Metropolitana'}}{% endblock %}
+{% block titlePage %}{{ 'Hospitales de la Región Metropolitana' }}{% endblock %}
 {% block body %}
 <div class="form-group mb-4">
     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCrearHospital">
@@ -21,7 +21,7 @@
             <tr><td>{{hospital.0}}</td>
                 <td>{{hospital.1}}</td>
                 <td>
-                    <a href="hospital/{{hospital.0}}"" class="btn btn-primary">Ver Detalle</button>
+                    <a href="hospital/{{hospital.0}}" class="btn btn-primary btn-sm">Ver Detalle</button>
                 </td>
             </tr>
           {% endfor %}

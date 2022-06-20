@@ -166,7 +166,7 @@
     </style>
 
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">Company name</a>
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">FONASA</a>
         <button class="navbar-toggler position-absolute d-md-none collapsed mb-5" type="button" data-bs-toggle="collapse"
             data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -188,31 +188,25 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" href="/listarPacientes">
                                 <span data-feather="file" class="align-text-bottom"></span>
-                                Pacientes
+                                Todos los Pacientes
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">
-                                <span data-feather="shopping-cart" class="align-text-bottom"></span>
-                                Products
+                            <a class="nav-link text-white" href="/listarPacientesMayorRiesgo">
+                                <span data-feather="file" class="align-text-bottom"></span>
+                                Pacientes con Mayor Riesgo
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">
-                                <span data-feather="users" class="align-text-bottom"></span>
-                                Customers
+                            <a class="nav-link text-white" href="/listarPacientesFumadores">
+                                <span data-feather="file" class="align-text-bottom"></span>
+                                Pacientes Fumadores
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">
-                                <span data-feather="bar-chart-2" class="align-text-bottom"></span>
-                                Reports
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="#">
-                                <span data-feather="layers" class="align-text-bottom"></span>
-                                Integrations
+                            <a class="nav-link text-white" href="/listarPacientesAncianos">
+                                <span data-feather="file" class="align-text-bottom"></span>
+                                Pacientes Ancianos en Espera
                             </a>
                         </li>
                     </ul>
@@ -241,10 +235,11 @@
 
     <script>
         $(document).ready(function () {
-            $('table').DataTable({
+            $('.datatables').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-                }
+                },
+        order: [[0, 'desc']]    
             });
         });
     </script>

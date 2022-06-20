@@ -1,0 +1,88 @@
+{% extends 'layout.html' %}
+{% block title %}{{ hospital.1 }}{% endblock %}
+{% block titlePage %}{{ hospital.1 }}{% endblock %}
+
+{% block body %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{message}}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="form-group mb-4">
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCrearConsulta">
+        Ingresar Nueva Consulta
+    </button>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped table-sm datatables">
+        <thead>
+            <tr>
+                <th scope="col">Run Especialista</th>
+                <th scope="col">Nombre Especialista</th>
+                <th scope="col">Tipo Consulta</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for consulta in consultas %}
+            <tr>
+                <td>{{consulta.1}}</td>
+                <td>{{consulta.2}}</td>
+                <td>{{consulta.3}}</td>
+                <td>{{consulta.4}}</td>
+                <td>
+                    <a href="/atenderPaciente/{{consulta.0}}/{{consulta.1}}" class="btn btn-primary btn-sm">Atender Pacientes</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearConsulta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Crear Nueva Consulta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/addConsulta" method="post" class="row g-3">
+                    <input type="text" name="idHospital" value="{{ hospital.0 }}" hidden>
+                    <div class="form-group">
+                        <input type="text" name="runEspecialista" class="form-control" placeholder="Run Especialista"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="nombreEspecialista" class="form-control" placeholder="Nombres Especialista"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <select name="idTipoConsulta" class="form-control" required>
+                            <option value="">Tipo de Consulta</option>
+                            <option value="1">Pediatría</option>
+                            <option value="2">Urgencia</option>
+                            <option value="3">CGI Consulta General Integral</option>
+                        </select>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Guardar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
