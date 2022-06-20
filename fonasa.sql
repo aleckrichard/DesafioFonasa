@@ -16,7 +16,7 @@ DECLARE idConsulta INT;
 
 CASE
 WHEN idConsulta = 1 THEN 
-SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista, tipoPaciente FROM pacientes AS p
+SELECT numeroHistoriaClinicaPaciente, runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista, tipoPaciente FROM pacientes AS p
 INNER JOIN consultas AS c ON p.idHospital = c.idHospital
 WHERE tipoPaciente = 'niño' AND prioridad <= 4
 AND c.idHospital = id
@@ -25,14 +25,14 @@ AND p.estado = 'En Espera'
 ORDER BY prioridad DESC;
 
 WHEN idConsulta = 3 THEN 
-SELECT runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista, tipoPaciente FROM pacientes AS p
+SELECT numeroHistoriaClinicaPaciente, runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista, tipoPaciente FROM pacientes AS p
 INNER JOIN consultas AS c ON p.idHospital = c.idHospital
 WHERE tipoPaciente NOT IN ('niño')
 AND c.idHospital = id AND runEspecialista = run
 AND p.estado = 'En Espera'
 ORDER BY prioridad DESC;
 WHEN idConsulta = 2 THEN
-SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista, tipoPaciente FROM pacientes AS p
+SELECT numeroHistoriaClinicaPaciente, runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista, tipoPaciente FROM pacientes AS p
 INNER JOIN consultas AS c ON p.idHospital = c.idHospital
 WHERE prioridad > 4
 AND c.idHospital = id
@@ -42,229 +42,50 @@ ORDER BY prioridad DESC;
 END CASE;
 END;;
 
-DROP PROCEDURE IF EXISTS `atenderPacientesPrueba`;;
-CREATE PROCEDURE `atenderPacientesPrueba`(IN id INT, run INT)
+DROP PROCEDURE IF EXISTS `listarPacientes`;;
+CREATE PROCEDURE `listarPacientes`(IN id INT)
 BEGIN
-DECLARE idConsulta INT;
-
-   SET idConsulta = (SELECT idTipoConsulta FROM consultas WHERE runEspecialista = run);
 
 CASE
-WHEN idConsulta = 1 THEN 
-SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista, tipoPaciente FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente = 'niño' AND prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
+-- LISTAR TODOS LOS PACIENTES ORDENADOS POR numeroHistoriaClinicaPaciente 
+WHEN id = 1 THEN 
+SELECT numeroHistoriaClinicaPaciente,
+        nombrePaciente, 
+        fechaNacimientoPaciente, 
+        TIMESTAMPDIFF(YEAR, fechaNacimientoPaciente, CURDATE()) AS edadPaciente,
+        prioridad,
+        IF(tipoPaciente= 'anciano', ((TIMESTAMPDIFF(YEAR, fechaNacimientoPaciente, CURDATE()) * prioridad)/100 +5.3), ((TIMESTAMPDIFF(YEAR, fechaNacimientoPaciente, CURDATE()) * prioridad) /100) ) AS riesgo,
+        h.nombreHospital
+        FROM pacientes AS p
+        INNER JOIN hospitales AS h ON p.idHospital = h.idHospital
+        ORDER BY numeroHistoriaClinicaPaciente DESC;
 
-WHEN idConsulta = 3 THEN 
-SELECT runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista, tipoPaciente FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente NOT IN ('niño')
-AND c.idHospital = id AND runEspecialista = run
-ORDER BY prioridad DESC;
-END CASE;
-END;;
-
-DROP PROCEDURE IF EXISTS `GetAllProducts`;;
-CREATE PROCEDURE `GetAllProducts`(IN id INT, run INT)
-BEGIN
-	SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente = 'niño' AND prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-END;;
-
-DROP PROCEDURE IF EXISTS `obtenerPacientes`;;
-CREATE PROCEDURE `obtenerPacientes`(IN id INT, run INT)
-BEGIN
-
-IF  id = 11223344 THEN 
-    	SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente = 'niño' AND prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-  ELSEIF id = 1 THEN 
-    	SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente = 'adulto' AND prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-  END IF;
-END;;
-
-DROP PROCEDURE IF EXISTS `obtenerPacientesParaAtender`;;
-CREATE PROCEDURE `obtenerPacientesParaAtender`(IN id INT, run INT)
-BEGIN
-DECLARE idConsulta INT;
-
-   SET idConsulta = (SELECT idTipoConsulta FROM consultas WHERE runEspecialista = run);
-
-IF  idConsulta = 11223344 THEN 
-    	SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente = 'niño' AND prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-  ELSEIF idConsulta = 3 THEN 
-    	SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente != 'niño'
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-  END IF;
-END;;
-
-DROP PROCEDURE IF EXISTS `obtenerPacientesParaAtender2`;;
-CREATE PROCEDURE `obtenerPacientesParaAtender2`(IN id INT, run INT)
-BEGIN
-DECLARE idConsulta INT;
-
-   SET idConsulta = (SELECT idTipoConsulta FROM consultas WHERE runEspecialista = run);
-
-case  
-when idConsulta = 1 THEN 
-    	SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente = 'niño' AND prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC; 
-when idConsulta = 3 THEN 
-    	SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente != 'niño'
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-end case; 
-END;;
-
-DROP PROCEDURE IF EXISTS `obtenerPacientesParaAtender3`;;
-CREATE PROCEDURE `obtenerPacientesParaAtender3`(IN id INT, run INT)
-BEGIN
-DECLARE idConsulta INT;
-
-   SET idConsulta = (SELECT idTipoConsulta FROM consultas WHERE runEspecialista = run);
-
-CASE
-WHEN idConsulta = 1 THEN 
-SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente = 'niño' AND prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-
-WHEN idConsulta = 3 THEN 
-SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente != 'niño'
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-
-WHEN idConsulta = 2 THEN
-SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-END CASE;
-END;;
-
-DROP PROCEDURE IF EXISTS `obtenerPacientesParaAtender4`;;
-CREATE PROCEDURE `obtenerPacientesParaAtender4`(IN id INT, run INT)
-BEGIN
-DECLARE idConsulta INT;
-
-   SET idConsulta = (SELECT idTipoConsulta FROM consultas WHERE runEspecialista = run);
-
-IF  idConsulta = 11223344 THEN 
-    	SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente = 'niño' AND prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-  ELSEIF idConsulta = 2 THEN 
-    	SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-  END IF;
-END;;
-
-DROP PROCEDURE IF EXISTS `obtenerPacientesParaAtender5`;;
-CREATE PROCEDURE `obtenerPacientesParaAtender5`(IN id INT, run INT)
-BEGIN
-DECLARE idConsulta INT;
-
-   SET idConsulta = (SELECT idTipoConsulta FROM consultas WHERE runEspecialista = run);
-
-IF  idConsulta = 1 THEN 
-    	SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE tipoPaciente = 'niño' AND prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-  ELSEIF idConsulta = 2 THEN 
-    	SELECT distinct runPaciente, nombrePaciente, prioridad, nombreEspecialista, runEspecialista FROM pacientes AS p
-INNER JOIN consultas AS c ON p.idHospital = c.idHospital
-WHERE prioridad <= 4
-AND c.idHospital = id
-AND runEspecialista = run
-ORDER BY prioridad DESC;
-  END IF;
-END;;
-
-DROP PROCEDURE IF EXISTS `prueba`;;
-CREATE PROCEDURE `prueba`(IN id INT, run INT)
-BEGIN
-DECLARE idConsulta INT;
-
-   SET idConsulta = (SELECT idTipoConsulta FROM consultas WHERE runEspecialista = run);
-
-CASE
-WHEN idConsulta = 1 THEN 
-SELECT idconsulta +10;
-
-WHEN idConsulta = 3 THEN 
-SELECT idconsulta +30;
-
-WHEN idConsulta = 2 THEN
-SELECT idconsulta +20;
-END CASE;
-END;;
-
-DROP PROCEDURE IF EXISTS `prueba2`;;
-CREATE PROCEDURE `prueba2`(IN id INT, run INT)
-BEGIN
-DECLARE idConsulta INT;
-
-   SET idConsulta = (SELECT idTipoConsulta FROM consultas WHERE runEspecialista = run);
-
-CASE
-WHEN idConsulta = 1 THEN 
-SELECT 'Es 1' AS valor;
-
-WHEN idConsulta = 3 THEN 
-SELECT 'Es 3' AS valor;
-
-WHEN idConsulta = 2 THEN
-SELECT 'Es 3' AS valor;
+WHEN id = 2 THEN 
+-- LISTAR TODOS LOS PACIENTES ORDENADOS POR nivel de riesgo
+SELECT numeroHistoriaClinicaPaciente,
+        nombrePaciente, 
+        fechaNacimientoPaciente, 
+        TIMESTAMPDIFF(YEAR, fechaNacimientoPaciente, CURDATE()) AS edadPaciente,
+        prioridad,
+        IF(tipoPaciente= 'anciano', ((TIMESTAMPDIFF(YEAR, fechaNacimientoPaciente, CURDATE()) * prioridad)/100 +5.3), ((TIMESTAMPDIFF(YEAR, fechaNacimientoPaciente, CURDATE()) * prioridad) /100) ) AS riesgo,
+        h.nombreHospital
+        FROM pacientes AS p
+        INNER JOIN hospitales AS h ON p.idHospital = h.idHospital
+        ORDER BY riesgo DESC;
+WHEN id= 3 THEN
+-- LISTAR TODOS LOS PACIENTES FUMADORES
+SELECT numeroHistoriaClinicaPaciente,
+        nombrePaciente,
+        'SI' AS pacienteFumadador,
+        fechaNacimientoPaciente, 
+        TIMESTAMPDIFF(YEAR, fechaNacimientoPaciente, CURDATE()) AS edadPaciente,
+        prioridad,
+        IF(tipoPaciente= 'anciano', ((TIMESTAMPDIFF(YEAR, fechaNacimientoPaciente, CURDATE()) * prioridad)/100 +5.3), ((TIMESTAMPDIFF(YEAR, fechaNacimientoPaciente, CURDATE()) * prioridad) /100) ) AS riesgo,
+        h.nombreHospital
+        FROM pacientes AS p
+        INNER JOIN hospitales AS h ON p.idHospital = h.idHospital
+        WHERE pacienteFumador = 1
+        ORDER BY riesgo DESC;
 END CASE;
 END;;
 
@@ -310,7 +131,8 @@ INSERT INTO `consultas` (`idConsulta`, `idHospital`, `runEspecialista`, `nombreE
 (2,	12,	'11223344',	'Dr Strange',	1,	'En Espera'),
 (3,	12,	'1123123',	'Dra Gonzalez',	2,	'En Espera'),
 (13,	12,	'15121212',	'Dra. Ortega',	1,	'En Espera'),
-(14,	12,	'22112211',	'Dr Henandez',	3,	'En Espera');
+(14,	12,	'22112211',	'Dr Henandez',	3,	'En Espera'),
+(15,	4,	'99887766',	'Dr Francisco Esteban González Pérez',	3,	'En Espera');
 
 DROP TABLE IF EXISTS `especialistas`;
 CREATE TABLE `especialistas` (
@@ -324,17 +146,6 @@ CREATE TABLE `especialistas` (
 INSERT INTO `especialistas` (`idEspecialista`, `runEspecialista`, `nombreEspecialista`) VALUES
 (1,	'',	'Marcelo Andrés Vera Sandoval');
 
-DROP TABLE IF EXISTS `estadoconsulta`;
-CREATE TABLE `estadoconsulta` (
-  `idEstadoConsulta` int NOT NULL AUTO_INCREMENT,
-  `nombreEstadoConsulta` varchar(20) NOT NULL,
-  PRIMARY KEY (`idEstadoConsulta`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
-INSERT INTO `estadoconsulta` (`idEstadoConsulta`, `nombreEstadoConsulta`) VALUES
-(1,	'Ocupada'),
-(2,	'En Espera');
-
 DROP TABLE IF EXISTS `hospitales`;
 CREATE TABLE `hospitales` (
   `idHospital` int NOT NULL AUTO_INCREMENT,
@@ -344,15 +155,7 @@ CREATE TABLE `hospitales` (
 
 INSERT INTO `hospitales` (`idHospital`, `nombreHospital`) VALUES
 (1,	'Hospital Metropolitano de Santiago'),
-(2,	'Hospital Padre Hurtado'),
-(3,	'Hospital San Borja Arriarán'),
 (4,	'Hospital Barros Luco Trudeau'),
-(5,	'Hospital San Juan de Dios'),
-(6,	'CDT Hospital San Borja Arriarán'),
-(7,	'Hospital Base Osorno'),
-(8,	'Hospital Río Negro'),
-(9,	'Hospital Purranque'),
-(11,	'Hospital Dr. Luis Tisné Brousse'),
 (12,	'Hospital Metropolitano Occidente Félix Bulnes Cerda');
 
 DROP TABLE IF EXISTS `pacientes`;
@@ -376,17 +179,19 @@ CREATE TABLE `pacientes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 INSERT INTO `pacientes` (`numeroHistoriaClinicaPaciente`, `nombrePaciente`, `runPaciente`, `fechaNacimientoPaciente`, `idHospital`, `relacionPesoEstatura`, `pacienteFumador`, `anniosFumador`, `pacienteDieta`, `prioridad`, `tipoPaciente`, `estado`) VALUES
-(8,	'Alex Alvarado',	'173578067',	'1990-01-05',	12,	NULL,	0,	'',	NULL,	2,	'joven',	'En Espera'),
-(9,	'Iris vargas',	'11710740k',	'1971-08-22',	12,	NULL,	NULL,	NULL,	'0',	4.66667,	'anciano',	'En Espera'),
+(8,	'Alex Alvarado',	'55665566',	'1990-01-05',	12,	NULL,	0,	'',	NULL,	2,	'joven',	'En Espera'),
+(9,	'Iris vargas',	'67676767k',	'1971-08-22',	12,	NULL,	NULL,	NULL,	'0',	4.66667,	'anciano',	'atendido'),
 (10,	'Camila Lopez',	'22334455',	'2018-01-01',	12,	3,	NULL,	NULL,	NULL,	6,	'niño',	'En Espera'),
-(11,	'Alejandra Mendez',	'17741817k',	'1990-12-05',	12,	NULL,	0,	'',	NULL,	2,	'joven',	'En Espera'),
+(11,	'Alejandra Mendez',	'98989898k',	'1990-12-05',	12,	NULL,	0,	'',	NULL,	2,	'joven',	'En Espera'),
 (12,	'Cesar Díaz',	'11223344',	'2008-06-04',	12,	4,	NULL,	NULL,	NULL,	5,	'niño',	'En Espera'),
-(13,	'Miguel Alvarado',	'12312312',	'1987-01-10',	12,	NULL,	1,	'14',	NULL,	5.5,	'joven',	'En Espera'),
+(13,	'Miguel Alvarado',	'12312312',	'1987-01-10',	12,	NULL,	1,	'14',	NULL,	5.5,	'joven',	'atendido'),
 (14,	'Andrea Jara',	'F12883934',	'2018-06-18',	12,	4,	NULL,	NULL,	NULL,	7,	'niño',	'En Espera'),
 (15,	'Usuario Test',	'11112222',	'1998-01-06',	1,	NULL,	1,	'2',	NULL,	2.5,	'joven',	'En Espera'),
 (16,	'Bastián',	'123123123',	'2016-06-19',	4,	3,	NULL,	NULL,	NULL,	6,	'niño',	'En Espera'),
 (17,	'Javier Nuñez',	'63773737',	'2016-05-06',	12,	1,	NULL,	NULL,	NULL,	3,	'niño',	'En Espera'),
-(18,	'Susana Arias',	'21212121',	'2020-01-01',	12,	1,	NULL,	NULL,	NULL,	4,	'niño',	'En Espera');
+(18,	'Susana Arias',	'21212121',	'2020-01-01',	12,	1,	NULL,	NULL,	NULL,	4,	'niño',	'En Espera'),
+(19,	'Juan Vera',	'81212121',	'1945-12-13',	4,	NULL,	NULL,	NULL,	'1',	7.8,	'anciano',	'En Espera'),
+(20,	'Sonia Almonacid Sanhueza',	'6546535',	'1935-10-10',	4,	NULL,	NULL,	NULL,	'0',	5.86667,	'anciano',	'En Espera');
 
 DROP TABLE IF EXISTS `programaanciano`;
 CREATE TABLE `programaanciano` (
@@ -433,4 +238,4 @@ INSERT INTO `tipoconsulta` (`idTipoConsulta`, `nombreTipoConsulta`) VALUES
 (2,	'Urgencia'),
 (3,	'CGI Consulta General Integral');
 
--- 2022-06-20 18:49:45
+-- 2022-06-20 22:01:03
